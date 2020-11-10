@@ -16,24 +16,31 @@ const app = express()
 app.use(express.json())
 
 app.post('/announce', async (req, res) => {
-  const {message, channel: channelName} = req.body;
+  const {message, channel: channelName, id} = req.body;
 
-  const channel = client.channels.cache.find((channel) => {
-    if (channel.type === "text") {
-      return (channel as TextChannel).name === channelName
-    }
+  let channel = null;
+  if (id) {
+    channel = client.channels.cache.get(id) as TextChannel
+  }
 
-    return false
-  }) as TextChannel
-
-  if (!channel) {
-    return res.status(404).send({status: "NOT FOUND", channel: channelName});
+  if (channelName) {
+    channel = client.channels.cache.find((channel) => {
+      if (channel.type === "text") {
+        return (channel as TextChannel).name === channelName
+      }
+  
+      return false
+    }) as TextChannel
   }
   
-  console.log(`Sending "${message}" to channel #${channelName}.`);
+  if (!channel) {
+    return res.status(404).send({status: "NOT FOUND", channel: id || channelName});
+  }
+  
+  console.log(`Sending "${message}" to channel #${id || channelName}.`);
   
   await channel.send(message);
-  res.send({status: 'SUCCESS', message, channel: channelName});
+  res.send({status: 'SUCCESS', message, channel: id || channelName});
 })
 
 app.post('/upgrade', async (req, res) => {

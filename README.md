@@ -22,6 +22,13 @@ POST `/announce`
   "channel": "announcements"
 }
 ```
+OR
+```json
+{
+  "message": "This is an announcement",
+  "id": "691816726148677636"
+}
+```
 
 Response
 ```json
