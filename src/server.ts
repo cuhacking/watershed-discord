@@ -1,6 +1,5 @@
 import { Client, TextChannel, Intents} from 'discord.js';
 import { config } from 'dotenv';
-import { Channel, Guild, Role } from './constants';
 import express from 'express';
 
 // Load env variables
@@ -44,8 +43,8 @@ app.post('/announce', async (req, res) => {
 })
 
 app.post('/upgrade', async (req, res) => {
-  const guild = client.guilds.cache.get(Guild.CuHacking);
-  const role = guild.roles.cache.get(Role.Hacker);
+  const guild = client.guilds.cache.get(process.env.GUILD_ID);
+  const role = guild.roles.cache.get(process.env.ROLE_ID);
   const {id, user: tag} = req.body;
 
   await guild.members.fetch();
@@ -64,7 +63,7 @@ app.post('/upgrade', async (req, res) => {
     return res.status(404).send({status: "NOT FOUND", user: id || tag});
   }
 
-  console.log(`Upgrading user "${id || tag}" to role ${Role.Hacker}.`);
+  console.log(`Upgrading user "${id || tag}" to role ${process.env.ROLE_ID}.`);
   await user.roles.add(role);
   res.send({status: 'SUCCESS', user: id || tag});
 })
