@@ -20,17 +20,17 @@ app.post('/announce', async (req, res) => {
 
   let channel = null;
   if (id) {
-    channel = client.channels.cache.get(id) as TextChannel
+    channel = client.channels.cache.get(id) as TextChannel;
   }
 
   if (channelName) {
     channel = client.channels.cache.find((channel) => {
       if (channel.type === "text") {
-        return (channel as TextChannel).name === channelName
+        return (channel as TextChannel).name === channelName;
       }
   
-      return false
-    }) as TextChannel
+      return false;
+    }) as TextChannel;
   }
   
   if (!channel) {
@@ -46,20 +46,27 @@ app.post('/announce', async (req, res) => {
 app.post('/upgrade', async (req, res) => {
   const guild = client.guilds.cache.get(Guild.CuHacking);
   const role = guild.roles.cache.get(Role.Hacker);
-  const tag = req.body.user;
+  const {id, user: tag} = req.body;
 
-  await guild.members.fetch()
-  const user = guild.members.cache.find((member) => 
-    member.user.tag === tag
-  )
-
-  if (!user) {
-    return res.status(404).send({status: "NOT FOUND", user: tag});
+  await guild.members.fetch();
+  let user = null;
+  if (tag) {
+    user = guild.members.cache.find((member) => 
+      member.user.tag === tag
+    );
   }
 
-  console.log(`Upgrading user "${tag}" to role ${Role.Hacker}.`);
+  if (id) {
+    user = guild.members.cache.get(id);
+  }
+
+  if (!user) {
+    return res.status(404).send({status: "NOT FOUND", user: id || tag});
+  }
+
+  console.log(`Upgrading user "${id || tag}" to role ${Role.Hacker}.`);
   await user.roles.add(role);
-  res.send({status: 'SUCCESS', user: tag});
+  res.send({status: 'SUCCESS', user: id || tag});
 })
 
 client.login(process.env.TOKEN);

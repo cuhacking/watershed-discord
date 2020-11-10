@@ -54,6 +54,13 @@ POST `/upgrade`
     "user": "Test#0021"
 }
 ```
+or use ID
+POST `/upgrade`
+```json
+{
+    "id": "147468550859908096"
+}
+```
 
 Response
 ```json
