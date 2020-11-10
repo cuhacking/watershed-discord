@@ -22,7 +22,7 @@ POST `/announce`
   "channel": "announcements"
 }
 ```
-OR
+Or use channel id
 ```json
 {
   "message": "This is an announcement",
