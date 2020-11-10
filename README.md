@@ -18,15 +18,33 @@ Token can be found in the Discord developer portal, go to the app, then go to th
 POST `/announce`
 ```json
 {
-  "message": "This is an announcement"
+  "message": "This is an announcement",
+  "channel": "announcements"
 }
 ```
 
 Response
 ```json
 {
-    "status": "SENT",
-    "message": "This is an announcement"
+    "status": "SUCCESS",
+    "message": "This is an announcement",
+    "channel": "announcements"
+}
+```
+
+### Give a user the hacker role
+POST `/upgrade`
+```json
+{
+    "user": "Test#0021"
+}
+```
+
+Response
+```json
+{
+    "status": "SUCCESS",
+    "user": "Test#0021"
 }
 ```
 
