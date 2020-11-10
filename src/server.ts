@@ -1,10 +1,10 @@
-import Discord from 'discord.js';
+import {Client} from 'discord.js';
 import { config } from 'dotenv';
 
 // Load env variables
 config();
 
-const client = new Discord.Client();
+const client = new Client();
 
 client.on('ready', () => {
   console.log(`Logged in as ${client?.user?.tag}!`);
