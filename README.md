@@ -32,6 +32,14 @@ Response
 }
 ```
 
+Not found
+```json
+{
+    "status": "NOT FOUND",
+    "channel": "announcements"
+}
+```
+
 ### Give a user the hacker role
 POST `/upgrade`
 ```json
@@ -48,3 +56,10 @@ Response
 }
 ```
 
+Not found
+```json
+{
+    "status": "NOT FOUND",
+    "user": "Test#0021"
+}
+```
