@@ -2,10 +2,16 @@
 
 `yarn install`
 
-Create `.env` file and add a line:
-`TOKEN=<XXX>`
+Create `.env` file:
+```
+TOKEN=<XXX>
+ROLE_ID=<XXX>
+GUILD_ID=<XXX>
+```
 
 Token can be found in the Discord developer portal, go to the app, then go to the "Bot" tab.
+
+Role is the id of the role to give out and the guild is the discord server id.
 
 # Running
 
