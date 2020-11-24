@@ -36,7 +36,7 @@ Or use channel id
 }
 ```
 
-Response
+Response (200)
 ```json
 {
     "status": "SUCCESS",
@@ -45,7 +45,7 @@ Response
 }
 ```
 
-Not found
+Not found (404)
 ```json
 {
     "status": "NOT FOUND",
@@ -68,7 +68,7 @@ POST `/upgrade`
 }
 ```
 
-Response
+Response (200)
 ```json
 {
     "status": "SUCCESS",
@@ -76,7 +76,7 @@ Response
 }
 ```
 
-Not found
+Not found (404)
 ```json
 {
     "status": "NOT FOUND",
