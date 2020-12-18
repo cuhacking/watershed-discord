@@ -3,9 +3,9 @@
 `yarn install`
 
 Create `.env` file:
+
 ```
 TOKEN=<XXX>
-ROLE_ID=<XXX>
 GUILD_ID=<XXX>
 ```
 
@@ -22,13 +22,16 @@ Role is the id of the role to give out and the guild is the discord server id.
 ### Make an announcement
 
 POST `/announce`
+
 ```json
 {
   "message": "This is an announcement",
   "channel": "announcements"
 }
 ```
+
 Or use channel id
+
 ```json
 {
   "message": "This is an announcement",
@@ -37,49 +40,58 @@ Or use channel id
 ```
 
 Response (200)
+
 ```json
 {
-    "status": "SUCCESS",
-    "message": "This is an announcement",
-    "channel": "announcements"
+  "status": "SUCCESS",
+  "message": "This is an announcement",
+  "channel": "announcements"
 }
 ```
 
 Not found (404)
+
 ```json
 {
-    "status": "NOT FOUND",
-    "channel": "announcements"
+  "status": "NOT FOUND",
+  "channel": "announcements"
 }
 ```
 
 ### Give a user the hacker role
+
 POST `/upgrade`
+
 ```json
 {
-    "user": "Test#0021"
+  "user": "Test#0021",
+  "roleId": "123456789"
 }
 ```
+
 or use ID
 POST `/upgrade`
+
 ```json
 {
-    "id": "147468550859908096"
+  "id": "147468550859908096"
 }
 ```
 
 Response (200)
+
 ```json
 {
-    "status": "SUCCESS",
-    "user": "Test#0021"
+  "status": "SUCCESS",
+  "user": "Test#0021"
 }
 ```
 
 Not found (404)
+
 ```json
 {
-    "status": "NOT FOUND",
-    "user": "Test#0021"
+  "status": "NOT FOUND",
+  "user": "Test#0021"
 }
 ```
