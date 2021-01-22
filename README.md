@@ -7,6 +7,7 @@ Create `.env` file:
 ```
 TOKEN=<XXX>
 GUILD_ID=<XXX>
+RAVENS_QUEST_API=https://dev.cuhacking.com/api/ravensQuest/
 ```
 
 Token can be found in the Discord developer portal, go to the app, then go to the "Bot" tab.
