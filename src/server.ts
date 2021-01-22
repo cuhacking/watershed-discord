@@ -1,6 +1,7 @@
 import { Client, TextChannel, Intents } from "discord.js";
 import { config } from "dotenv";
 import express from "express";
+import fetch from "node-fetch";
 
 // Load env variables
 config();
@@ -66,6 +67,112 @@ app.post("/upgrade", async (req, res) => {
   await user.roles.add(role);
   res.send({ status: "SUCCESS", user: id || tag });
 });
+
+client.on("message", async (message) => {
+  const userId = message.author.id;
+
+  async function switchTracks(track: number) {
+    const resp = await fetch(api("switchTracks"), {
+      body: JSON.stringify({ userId, track }),
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (resp.ok) return true;
+
+    message.reply("You have to type !start first!");
+  }
+
+  async function getQuestion() {
+    const resp = await fetch(api(`questions/${userId}`));
+
+    console.log(resp);
+    const { questionContent } = resp.body;
+    if (resp.body.questionContent) {
+      message.reply(questionContent);
+    }
+  }
+
+  const prefix = "!";
+  if (message.channel.type == "dm") {
+    if (message.content.startsWith(prefix)) {
+      const content = message.content.replace(prefix, "");
+      let resp;
+      switch (content) {
+        case "help":
+          message.reply(
+            "The commands to visit the three locations are: !cabin, !forest, !lake. Once you solve a challenge, simply send me the solution code to move on to the next challenge!"
+          );
+          break;
+        case "cabin":
+          if (await switchTracks(0)) {
+            message.reply("Cozy up, you went indoors into the Cabin!");
+          }
+          getQuestion();
+          break;
+        case "forest":
+          if (await switchTracks(1)) {
+            message.reply(
+              "You have stepped foot into the forest, be careful not to get lost!"
+            );
+            getQuestion();
+          }
+          break;
+        case "lake":
+          if (await switchTracks(2)) {
+            message.reply("Watch your step, you're on the frozen lake!");
+          }
+          getQuestion();
+          break;
+        case "start":
+          resp = await fetch(api("start"), {
+            body: { userId },
+            method: "post",
+            headers: { "Content-Type": "application/json" },
+          });
+          switch (resp.status) {
+            case 200:
+              message.reply(
+                "So you have decided to help me, great! The commands to visit the three locations are: !cabin, !forest, !lake. Each location will have challenges you need to solve.\n\nOnce you solve a challenge, simply send me the solution code to move on to the next challenge!"
+              );
+              break;
+            case 400:
+              message.reply("You've already started!");
+              break;
+            default:
+              message.reply(
+                "You need to link your discord on https://2021.cuhacking.com/"
+              );
+              break;
+          }
+          break;
+        default:
+          message.reply(
+            "That's not a valid command. Type !help to see available commands."
+          );
+          break;
+      }
+    } else {
+      if (!message.author.bot) {
+        const resp = await fetch(api("question"), {
+          body: { userId, answer: message.content },
+          method: "post",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (resp.ok) {
+          message.reply("That is correct!");
+          getQuestion();
+        } else {
+        }
+      }
+    }
+  }
+});
+
+function api(endpoint: string) {
+  return process.env.RAVENS_QUEST_API + endpoint;
+}
 
 client.login(process.env.TOKEN);
 app.listen(process.env.PORT || 80);
