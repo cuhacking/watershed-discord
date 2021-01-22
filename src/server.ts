@@ -78,6 +78,7 @@ client.on("message", async (message) => {
       headers: { "Content-Type": "application/json" },
     });
 
+    // todo handle complete track
     if (resp.ok) return true;
 
     message.reply("You have to type !start first!");
@@ -164,6 +165,7 @@ client.on("message", async (message) => {
           message.reply("That is correct!");
           getQuestion();
         } else {
+          message.reply("Sorry, wrong answer.");
         }
       }
     }
