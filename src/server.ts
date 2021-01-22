@@ -85,12 +85,13 @@ client.on("message", async (message) => {
   }
 
   async function getQuestion() {
-    const resp = await fetch(api(`questions/${userId}`));
+    const resp = await fetch(api(`question/${userId}`));
 
-    console.log(resp);
-    const { questionContent } = resp.body;
-    if (resp.body.questionContent) {
-      message.reply(questionContent);
+    if (!resp.ok) return;
+
+    const question = await resp.text();
+    if (question) {
+      message.reply(question);
     }
   }
 
@@ -155,15 +156,30 @@ client.on("message", async (message) => {
       }
     } else {
       if (!message.author.bot) {
-        const resp = await fetch(api("question"), {
-          body: { userId, answer: message.content },
+        const resp = await fetch(api("submit"), {
+          body: JSON.stringify({ userId, answer: message.content }),
           method: "post",
           headers: { "Content-Type": "application/json" },
         });
 
+        console.log(resp);
+
+        if (resp.status === 401) {
+          return message.reply(
+            "You already completed the track! To switch tracks, type !cabin, !lake, or !forest."
+          );
+        }
+
         if (resp.ok) {
           message.reply("That is correct!");
-          getQuestion();
+          const { nextQuestion } = await resp.json();
+          if (!nextQuestion) {
+            message.reply(
+              "You completed the track! To switch tracks, type !cabin, !lake, or !forest."
+            );
+          } else {
+            message.reply(`Next challenge: ${nextQuestion}`);
+          }
         } else {
           message.reply("Sorry, wrong answer.");
         }
