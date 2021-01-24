@@ -106,7 +106,7 @@ client.on("message", async (message) => {
       switch (content) {
         case "help":
           message.reply(
-            "The commands to visit the three locations are: !cabin, !forest, !lake. Once you solve a challenge, simply send me the solution code to move on to the next challenge!"
+            "The commands to visit the three locations are: !cabin, !forest, !lake. Once you solve a challenge, simply send me the solution code to move on to the next challenge! Type !progress to view your progress."
           );
           break;
         case "cabin":
@@ -177,7 +177,7 @@ client.on("message", async (message) => {
           headers: { "Content-Type": "application/json" },
         });
 
-        if (resp.status === 403) {
+        if (resp.status === 403 || resp.status === 404) {
           return message.reply("You have to type !start first!");
         }
 
