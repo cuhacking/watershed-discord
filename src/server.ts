@@ -12,6 +12,8 @@ client.on("ready", () => {
   console.log(`Logged in as ${client?.user?.tag}!`);
 });
 
+const TRACKS = ["Cabin", "Forest", "Lake"];
+
 const app = express();
 app.use(express.json());
 
@@ -127,6 +129,18 @@ client.on("message", async (message) => {
           }
           getQuestion();
           break;
+        case "progress":
+          resp = await fetch(api(`progress/${userId}`));
+          if (resp.ok) {
+            const tracks = await resp.json();
+            message.reply(
+              `Your progress:\n\n${formatProgress(tracks, 0)}${formatProgress(
+                tracks,
+                1
+              )}${formatProgress(tracks, 2)}`
+            );
+          }
+          break;
         case "start":
           resp = await fetch(api("start"), {
             body: JSON.stringify({ userId }),
@@ -193,6 +207,15 @@ client.on("message", async (message) => {
 
 function api(endpoint: string) {
   return process.env.RAVENS_QUEST_API + endpoint;
+}
+
+function formatProgress(tracks: any, track: number) {
+  const val = tracks[`track${track}`];
+  if (val === "Completed") {
+    return `${TRACKS[track]}: Complete!\n`;
+  }
+
+  return `${TRACKS[track]}: Challenge ${Number(val) + 1}/4\n`;
 }
 
 client.login(process.env.TOKEN);
