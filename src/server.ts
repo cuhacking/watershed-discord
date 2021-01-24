@@ -6,6 +6,7 @@ import fetch from "node-fetch";
 const HELP = `Change Location:
 - \`!cabin\`
 - \`!forest\`
+- \`!lake\`
 Other Commands:
 - \`!progress\` – see your progress
 - \`!question\` - get current question
