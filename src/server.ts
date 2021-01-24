@@ -106,7 +106,7 @@ client.on("message", async (message) => {
       switch (content) {
         case "help":
           message.reply(
-            "The commands to visit the three locations are: !cabin, !forest, !lake. Once you solve a challenge, simply send me the solution code to move on to the next challenge! Type !progress to view your progress."
+            "The commands to visit the three locations are: `!cabin`, `!forest`, `!lake`. Once you solve a challenge, simply send me the solution code to move on to the next challenge. Type `!progress` to view your progress and `!question` to get the current question."
           );
           break;
         case "cabin":
@@ -141,6 +141,9 @@ client.on("message", async (message) => {
             );
           }
           break;
+        case "question":
+          getQuestion();
+          break;
         case "start":
           resp = await fetch(api("start"), {
             body: JSON.stringify({ userId }),
@@ -150,7 +153,7 @@ client.on("message", async (message) => {
           switch (resp.status) {
             case 200:
               message.reply(
-                "So you have decided to help me, great! The commands to visit the three locations are: !cabin, !forest, !lake. Each location will have challenges you need to solve.\n\nOnce you solve a challenge, simply send me the solution code to move on to the next challenge!"
+                "So you have decided to help me, great! To start, run one of the following commands commands to visit any of the three locations: `!cabin`, `!forest`, `!lake`. Each location will have challenges you need to solve.\n\nOnce you solve a challenge, simply send me the solution code to move on to the next challenge. Type `!progress` to view your progress and `!help` for available commands."
               );
               break;
             case 400:
@@ -183,7 +186,7 @@ client.on("message", async (message) => {
 
         if (resp.status === 405) {
           return message.reply(
-            "You already completed the track! To switch tracks, type !cabin, !lake, or !forest."
+            "You already completed this location! To switch locations, type !cabin, !lake, or !forest."
           );
         }
 
@@ -192,7 +195,7 @@ client.on("message", async (message) => {
           const { nextQuestion } = await resp.json();
           if (!nextQuestion) {
             message.reply(
-              "You completed the track! To switch tracks, type !cabin, !lake, or !forest."
+              "Congratulations, you have finished all the challenges in this location! To switch locations, type !cabin, !lake, or !forest."
             );
           } else {
             message.reply(`Next challenge: ${nextQuestion}`);
@@ -215,7 +218,7 @@ function formatProgress(tracks: any, track: number) {
     return `${TRACKS[track]}: Complete!\n`;
   }
 
-  return `${TRACKS[track]}: Challenge ${Number(val) + 1}/4\n`;
+  return `${TRACKS[track]}: Completed ${Number(val)}/4\n`;
 }
 
 client.login(process.env.TOKEN);
