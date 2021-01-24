@@ -2,6 +2,7 @@ import { Client, TextChannel, Intents } from "discord.js";
 import { config } from "dotenv";
 import express from "express";
 import fetch from "node-fetch";
+import path from "path";
 
 // Load env variables
 config();
@@ -128,7 +129,7 @@ client.on("message", async (message) => {
           break;
         case "start":
           resp = await fetch(api("start"), {
-            body: { userId },
+            body: JSON.stringify({ userId }),
             method: "post",
             headers: { "Content-Type": "application/json" },
           });
@@ -162,9 +163,11 @@ client.on("message", async (message) => {
           headers: { "Content-Type": "application/json" },
         });
 
-        console.log(resp);
+        if (resp.status === 403) {
+          return message.reply("You have to type !start first!");
+        }
 
-        if (resp.status === 401) {
+        if (resp.status === 405) {
           return message.reply(
             "You already completed the track! To switch tracks, type !cabin, !lake, or !forest."
           );
