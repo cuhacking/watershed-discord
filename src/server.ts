@@ -156,10 +156,11 @@ client.on("message", async (message) => {
                 "So you have decided to help me, great! To start, run one of the following commands commands to visit any of the three locations: `!cabin`, `!forest`, `!lake`. Each location will have challenges you need to solve.\n\nOnce you solve a challenge, simply send me the solution code to move on to the next challenge. Type `!progress` to view your progress and `!help` for available commands."
               );
               break;
-            case 400:
+            case 403:
               message.reply("You've already started!");
               break;
             default:
+              console.log(resp.status);
               message.reply(
                 "You need to link your discord on https://2021.cuhacking.com/"
               );
