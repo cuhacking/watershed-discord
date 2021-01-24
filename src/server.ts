@@ -2,7 +2,16 @@ import { Client, TextChannel, Intents } from "discord.js";
 import { config } from "dotenv";
 import express from "express";
 import fetch from "node-fetch";
-import path from "path";
+
+const HELP = `Change Location:
+- \`!cabin\`
+- \`!forest\`
+Other Commands:
+- \`!progress\` – see your progress
+- \`!question\` - get current question
+- \`!help\` – see this message
+
+Once you solve a challenge, simply send me the solution code to move on to the next challenge.`;
 
 // Load env variables
 config();
@@ -16,6 +25,12 @@ const TRACKS = ["Cabin", "Forest", "Lake"];
 
 const app = express();
 app.use(express.json());
+
+async function messageChannel(channelId, message) {
+  const channel = client.channels.cache.get(channelId) as TextChannel;
+  console.log(`Sending "${message}" to channel #${channelId}.`);
+  await channel.send(message);
+}
 
 app.post("/announce", async (req, res) => {
   const { message, channel: channelName, id } = req.body;
@@ -105,9 +120,7 @@ client.on("message", async (message) => {
       let resp;
       switch (content) {
         case "help":
-          message.reply(
-            "The commands to visit the three locations are: `!cabin`, `!forest`, `!lake`. Once you solve a challenge, simply send me the solution code to move on to the next challenge. Type `!progress` to view your progress and `!question` to get the current question."
-          );
+          message.reply(HELP);
           break;
         case "cabin":
           if (await switchTracks(0)) {
@@ -169,7 +182,7 @@ client.on("message", async (message) => {
           break;
         default:
           message.reply(
-            "That's not a valid command. Type !help to see available commands."
+            "That's not a valid command. Type `!help` to see available commands."
           );
           break;
       }
@@ -187,16 +200,30 @@ client.on("message", async (message) => {
 
         if (resp.status === 405) {
           return message.reply(
-            "You already completed this location! To switch locations, type !cabin, !lake, or !forest."
+            "You already completed this location! To switch locations, type `!cabin`, `!lake`, or `!forest.`"
           );
         }
 
         if (resp.ok) {
           message.reply("That is correct!");
-          const { nextQuestion } = await resp.json();
+          messageChannel(
+            process.env.RAVENS_QUEST_LOG_CHANNEL_ID,
+            `<@${message.author.id}> has submitted code: ${message.content}`
+          );
+          const { nextQuestion, allComplete } = await resp.json();
+          if (allComplete) {
+            messageChannel(
+              process.env.RAVENS_QUEST_LOG_CHANNEL_ID,
+              `<@${message.author.id}> has completed all the challenges.`
+            );
+            return message.reply(
+              "Congratulations, you have finished all challenges! You win!"
+            );
+          }
+
           if (!nextQuestion) {
             message.reply(
-              "Congratulations, you have finished all the challenges in this location! To switch locations, type !cabin, !lake, or !forest."
+              "Congratulations, you have finished all the challenges in this location! To switch locations, type `!cabin`, `!lake`, or `!forest.`"
             );
           } else {
             message.reply(`Next challenge: ${nextQuestion}`);
