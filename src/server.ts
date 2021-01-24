@@ -106,7 +106,11 @@ client.on("message", async (message) => {
   async function getQuestion() {
     const resp = await fetch(api(`question/${userId}`));
 
-    if (!resp.ok) return;
+    if (!resp.ok) {
+      if (resp.status === 405) {
+        return message.reply("You've completed this track!");
+      }
+    }
 
     const question = await resp.text();
     if (question) {
