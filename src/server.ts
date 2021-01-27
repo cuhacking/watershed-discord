@@ -87,6 +87,20 @@ app.post("/upgrade", async (req, res) => {
   res.send({ status: "SUCCESS", user: id || tag });
 });
 
+app.get("/user/:id", async (req, res) => {
+  const guild = client.guilds.cache.get(process.env.GUILD_ID);
+  const { id } = req.params;
+
+  await guild.members.fetch();
+  const user = guild.members.cache.get(id);
+
+  if (!user) {
+    return res.status(404).send({ status: "NOT FOUND", user: id });
+  } else {
+    res.status(200);
+  }
+});
+
 client.on("message", async (message) => {
   const userId = message.author.id;
 
@@ -253,7 +267,7 @@ client.on("message", async (message) => {
           } else {
             setTimeout(() => {
               message.reply(
-                `Next challenge: ${nextQuestion}`,
+                `Next challenge:\n${nextQuestion}`,
                 nextQuestionUrl && {
                   files: [nextQuestionUrl],
                 }
