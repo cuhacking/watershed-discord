@@ -97,7 +97,7 @@ app.get("/user/:id", async (req, res) => {
   if (!user) {
     return res.status(404).send({ status: "NOT FOUND", user: id });
   } else {
-    res.status(200);
+    return res.sendStatus(200);
   }
 });
 
