@@ -112,9 +112,15 @@ client.on("message", async (message) => {
       }
     }
 
-    const question = await resp.text();
+    const json = await resp.json();
+    const { question, questionUrl } = json;
     if (question) {
-      message.reply(question);
+      message.reply(
+        question,
+        questionUrl && {
+          files: [questionUrl],
+        }
+      );
     }
   }
 
@@ -128,7 +134,7 @@ client.on("message", async (message) => {
           message.reply(HELP);
           break;
         case "cabin":
-          if (await switchTracks(0)) {
+          if (await switchTracks(2)) {
             message.reply("Cozy up, you went indoors into the Cabin!");
           }
           getQuestion();
@@ -142,7 +148,7 @@ client.on("message", async (message) => {
           }
           break;
         case "lake":
-          if (await switchTracks(2)) {
+          if (await switchTracks(0)) {
             message.reply("Watch your step, you're on the frozen lake!");
           }
           getQuestion();
@@ -210,12 +216,21 @@ client.on("message", async (message) => {
         }
 
         if (resp.ok) {
-          message.reply("That is correct!");
           messageChannel(
             process.env.RAVENS_QUEST_LOG_CHANNEL_ID,
             `<@${message.author.id}> has submitted code: ${message.content}`
           );
-          const { nextQuestion, allComplete } = await resp.json();
+          const json = await resp.json();
+          const {
+            nextQuestion,
+            snowmanName,
+            snowmanUrl,
+            nextQuestionUrl,
+            allComplete,
+          } = json;
+          message.reply(`Congratulations, you found the ${snowmanName}!`, {
+            files: [snowmanUrl],
+          });
           if (allComplete) {
             messageChannel(
               process.env.RAVENS_QUEST_LOG_CHANNEL_ID,
@@ -227,11 +242,20 @@ client.on("message", async (message) => {
           }
 
           if (!nextQuestion) {
-            message.reply(
-              "Congratulations, you have finished all the challenges in this location! To switch locations, type `!cabin`, `!lake`, or `!forest.`"
-            );
+            setTimeout(() => {
+              message.reply(
+                "Congratulations, you have finished all the challenges in this location! To switch locations, type `!cabin`, `!lake`, or `!forest.`"
+              );
+            }, 300);
           } else {
-            message.reply(`Next challenge: ${nextQuestion}`);
+            setTimeout(() => {
+              message.reply(
+                `Next challenge: ${nextQuestion}`,
+                nextQuestionUrl && {
+                  files: [nextQuestionUrl],
+                }
+              );
+            }, 300);
           }
         } else {
           message.reply("Sorry, wrong answer.");
