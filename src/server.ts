@@ -236,9 +236,12 @@ client.on("message", async (message) => {
               process.env.RAVENS_QUEST_LOG_CHANNEL_ID,
               `<@${message.author.id}> has completed all the challenges.`
             );
-            return message.reply(
-              "Congratulations, you have finished all challenges! You win!"
-            );
+            return setTimeout(() => {
+              message.reply(
+                "Congratulations, you have finished all challenges! You win!",
+                { files: ["https://i.imgur.com/UxgZ5sk.png"] }
+              );
+            }, 600);
           }
 
           if (!nextQuestion) {
