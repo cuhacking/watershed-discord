@@ -22,7 +22,7 @@ client.on("ready", () => {
   console.log(`Logged in as ${client?.user?.tag}!`);
 });
 
-const TRACKS = ["Cabin", "Forest", "Lake"];
+const TRACKS = ["Lake", "Forest", "Cabin"];
 
 const app = express();
 app.use(express.json());
