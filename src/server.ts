@@ -149,21 +149,26 @@ client.on("message", async (message) => {
           break;
         case "cabin":
           if (await switchTracks(2)) {
-            message.reply("Cozy up, you went indoors into the Cabin!");
+            message.reply("Cozy up, you went indoors into the Cabin!", {
+              files: ["https://i.imgur.com/bvd5B3d.jpg"],
+            });
           }
           getQuestion();
           break;
         case "forest":
           if (await switchTracks(1)) {
             message.reply(
-              "You have stepped foot into the forest, be careful not to get lost!"
+              "You have stepped foot into the forest, be careful not to get lost!",
+              { files: ["https://i.imgur.com/fB5pAMb.png"] }
             );
             getQuestion();
           }
           break;
         case "lake":
           if (await switchTracks(0)) {
-            message.reply("Watch your step, you're on the frozen lake!");
+            message.reply("Watch your step, you're on the frozen lake!", {
+              files: ["https://i.imgur.com/tEVpnpT.png"],
+            });
           }
           getQuestion();
           break;
