@@ -101,6 +101,14 @@ app.get("/user/:id", async (req, res) => {
   }
 });
 
+app.get('/getCheckIn/:id', async (req, res) => {
+  const guild = client.guilds.cache.get(process.env.GUILD_ID);
+  const { id } = req.params;
+
+  await guild.members.fetch();
+  res.status(200).send('Number of users with ID ' + id + ': ' + guild.roles.cache.get(id).members.size);
+});
+
 client.on("message", async (message) => {
   const userId = message.author.id;
 
